@@ -100,7 +100,7 @@ int main()
     Mat Q = jsoncppArrayToMat2D(Qmat);
     Mat R = jsoncppArrayToMat2D(Rmat);
     std::cout << "Measurement covariance: " << R << std::endl;
-    Mat B;
+    
 
     Mat x_init = jsoncppArrayToMat1D(xmat); 
     Mat P_init = jsoncppArrayToMat2D(Pmat); 
@@ -112,7 +112,7 @@ int main()
     Mat pred_states = jsoncppArrayToMat2D(predicted_states);
     Mat pred_covariances = jsoncppArrayToMat3D(predicated_covariances);
 
-    KalmanFilter kf(A,Q,B,H,R,x_init, P_init);
+    KalmanFilter kf(A,Q,H,R,x_init, P_init);
 
     for(int i = 0; i < sim_measurements.n_rows ; i++)
     {

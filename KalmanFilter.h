@@ -3,13 +3,20 @@
 #include <armadillo>
 
 using Mat = arma::mat;
+
+enum AdaptiveRFiltering
+{
+    CONSTANT,
+    INNOVATION,
+    RESIDUAL
+};
+
 class KalmanFilter
 {
     private:
         Mat _A, _Q, _B, _H, _R;
         // State and covariance
         Mat _x, _P;
-
         Mat _zeros;
     public:
     /*
@@ -20,6 +27,7 @@ class KalmanFilter
             - H : Observation matrix
             - R : Measurement error covariance
     */
+        KalmanFilter(Mat A, Mat Q, Mat H, Mat R, Mat x, Mat P);
         KalmanFilter(Mat A, Mat Q, Mat B, Mat H, Mat R, Mat x, Mat P);
     /*
      * Gaussian white noise selection
@@ -35,6 +43,8 @@ class KalmanFilter
                 - Private members _x and _P are updated with result of prediction
     */
         void Predict();
+        // Overloaded for control vector
+        void Predict(Mat u);
 
     /*
      *
