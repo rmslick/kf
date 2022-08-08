@@ -1,4 +1,5 @@
 #include "KalmanFilter.h"
+
 KalmanFilter::KalmanFilter(Mat A, Mat Q, Mat H, Mat R, Mat x, Mat P)
 :_A{A},_Q{Q},_H{H},_R{R},_x{x},_P{P}
 {
