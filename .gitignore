@@ -1,4 +1,4 @@
 .vscode/
-KalmanPy/
+KalmanPy/__pycache__
 kalman_filter
 Params.h
