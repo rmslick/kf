@@ -2,7 +2,7 @@
 #include <armadillo>
 //https://stackoverflow.com/questions/36861355/fatal-error-with-jsoncpp-while-compiling
 #include <jsoncpp/json/json.h>
-#include "KalmanFilter.h"
+#include "LinearKF.h"
 #include <fstream>
 
 using Mat = arma::mat;
@@ -112,7 +112,7 @@ int main()
     Mat pred_states = jsoncppArrayToMat2D(predicted_states);
     Mat pred_covariances = jsoncppArrayToMat3D(predicated_covariances);
 
-    KalmanFilter kf(A,Q,H,R,x_init, P_init);
+    LinearKF kf(A,Q,H,R,x_init, P_init);
 
     for(int i = 0; i < sim_measurements.n_rows ; i++)
     {

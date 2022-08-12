@@ -5,8 +5,8 @@ find_package(autodiff REQUIRED)
 find_package(Armadillo REQUIRED)
 find_package(jsoncpp REQUIRED)
 
-set(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/EKF.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/LinearKF.cpp  ${CMAKE_CURRENT_SOURCE_DIR}/src/KalmanFilter.cpp
-            ${CMAKE_CURRENT_SOURCE_DIR}/include/EKF.h ${CMAKE_CURRENT_SOURCE_DIR}/include/LinearKF.h ${CMAKE_CURRENT_SOURCE_DIR}/include/KalmanFilter.h ${CMAKE_CURRENT_SOURCE_DIR}/include/KF.h  )
+set(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/EKF.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/LinearKF.cpp  
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/EKF.h ${CMAKE_CURRENT_SOURCE_DIR}/include/LinearKF.h  ${CMAKE_CURRENT_SOURCE_DIR}/include/KF.h  )
 
 add_executable(kalman_filter main.cpp ${SOURCES})
 set_target_properties(kalman_filter PROPERTIES CXX_STANDARD 17)
