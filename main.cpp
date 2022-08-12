@@ -76,7 +76,7 @@ Mat jsoncppArrayToMat3D(Json::Value Amat)
 int main()
 {
     Json::Value simulation;
-    std::ifstream simulation_file("./KalmanPy/simulation_data.json", std::ifstream::binary);
+    std::ifstream simulation_file("/home/rmslick/KalmanFilter/KalmanFilterC/KalmanPy/simulation_data.json", std::ifstream::binary);
     simulation_file >> simulation;
     
     auto Amat = simulation["A"];
