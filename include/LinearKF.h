@@ -8,8 +8,9 @@ using Mat = arma::mat;
 
 class LinearKF : public KalmanFilter
 {
-    private:
-
+    protected:
+        MatrixXd (*_process_model)(VectorXreal x);
+        AutoDiffWrapper ad;
     public:
     /*
         Parameters
@@ -61,6 +62,16 @@ class LinearKF : public KalmanFilter
         Mat operator () (Mat z)
         {
             return GetState(z);
+        }
+        /*
+         * Method to set the state model
+         * It is assumed that every state is represented as a vector
+         * and that every return value is a matrix
+         * Ax+B
+         */
+        void SetProcessModel( MatrixXd (*func)(VectorXreal x) )
+        {
+            _process_model = func;
         }
         
 
