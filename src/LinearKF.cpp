@@ -1,14 +1,24 @@
 #include "LinearKF.h"
 
 LinearKF::LinearKF(Mat A, Mat Q, Mat H, Mat R, Mat x, Mat P)
-:_A{A},_Q{Q},_H{H},_R{R},_x{x},_P{P}
 {
-
+    _A = A;
+    _Q = Q;
+    _H = H;
+    _R = R;
+    _x = x;
+    _P = P;
 }
 LinearKF::LinearKF(Mat A, Mat Q, Mat B, Mat H, Mat R, Mat x, Mat P)
-:_A{A},_Q{Q},_B{B},_H{H},_R{R},_x{x},_P{P}
-{
 
+{
+    _A = A;
+    _Q = Q;
+    _B = B;
+    _H = H;
+    _R = R;
+    _x = x;
+    _P = P;
 }
 Mat LinearKF::WhiteNoise(Mat mean, Mat covariance)
 {

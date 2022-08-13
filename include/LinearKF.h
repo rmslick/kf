@@ -8,10 +8,7 @@ using Mat = arma::mat;
 class LinearKF : public KalmanFilter
 {
     private:
-        Mat _A, _Q, _B, _H, _R;
-        // State and covariance
-        Mat _x, _P;
-        Mat _zeros;
+
     public:
     /*
         Parameters

@@ -11,7 +11,10 @@ enum AdaptiveRFiltering
 class KalmanFilter
 {
     protected:
-
+        Mat _A, _Q, _B, _H, _R;
+        // State and covariance
+        Mat _x, _P;
+        Mat _zeros;
     public:
         virtual void Predict() = 0;
         virtual void Update(Mat z) = 0;
