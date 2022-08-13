@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <armadillo>
 #include "KF.h"
+#include "AutoDiffWrapper.h"
 using Mat = arma::mat;
 
 

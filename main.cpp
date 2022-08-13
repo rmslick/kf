@@ -3,6 +3,7 @@
 //https://stackoverflow.com/questions/36861355/fatal-error-with-jsoncpp-while-compiling
 #include <jsoncpp/json/json.h>
 #include "LinearKF.h"
+#include "AutoDiffWrapper.h"
 #include <fstream>
 
 using Mat = arma::mat;
@@ -128,6 +129,7 @@ int main()
 
 
     }
+
 
     return 0;
 }
