@@ -11,6 +11,7 @@ enum AdaptiveRFiltering
 class KalmanFilter
 {
     protected:
+
     public:
         virtual void Predict() = 0;
         virtual void Update(Mat z) = 0;
