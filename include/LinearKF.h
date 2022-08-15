@@ -3,7 +3,7 @@
 #include <armadillo>
 #include "KF.h"
 #include "AutoDiffWrapper.h"
-using Mat = arma::mat;
+using Mat = Eigen::MatrixXd;
 
 
 class LinearKF : public KalmanFilter
@@ -25,7 +25,7 @@ class LinearKF : public KalmanFilter
     /*
      * Gaussian white noise selection
      */
-        Mat WhiteNoise(Mat mean, Mat covariance);
+        //Mat WhiteNoise(Mat mean, Mat covariance);
     
     /*
         Predict - Process model to predict current state from state transition

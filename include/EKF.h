@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <armadillo>
 #include "KF.h"
-using Mat = arma::mat;
+#include "AutoDiffWrapper.h"
+using Mat = Eigen::MatrixXd;
 
 
 
@@ -10,7 +11,9 @@ using Mat = arma::mat;
 class EKF : public KalmanFilter
 {
     private:
-
+    protected:
+        VectorXreal (*processModel)(VectorXreal);
+        AutoDiffWrapper ad;
     public:
     /*
         Parameters
@@ -26,7 +29,7 @@ class EKF : public KalmanFilter
     /*
      * Gaussian white noise selection
      */
-        Mat WhiteNoise(Mat mean, Mat covariance);
+        //Mat WhiteNoise(Mat mean, Mat covariance);
     
     /*
         Predict - Process model to predict current state from state transition
@@ -64,6 +67,9 @@ class EKF : public KalmanFilter
         {
             return GetState(z);
         }
-        
+        void SetProcessModel(VectorXreal(*f)(VectorXreal))
+        {
+            processModel = f;
+        }
 
 };

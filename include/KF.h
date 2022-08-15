@@ -1,6 +1,6 @@
 #pragma once
-#include <armadillo>
-using Mat = arma::mat;
+#include <Eigen/Dense>
+using Mat = Eigen::MatrixXd;
 enum AdaptiveRFiltering
 {
     CONSTANT,
