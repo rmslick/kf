@@ -4,7 +4,7 @@
 #include "KF.h"
 #include "AutoDiffWrapper.h"
 using Mat = Eigen::MatrixXd;
-
+using Vec = Eigen::VectorXd;
 
 
 

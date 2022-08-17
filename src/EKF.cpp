@@ -34,16 +34,17 @@ void EKF::Predict()
 void EKF::Predict(Mat u)
 {
     //Need to add control vector
-    auto _x_k = _A * _x +_B*u;
+    Eigen::MatrixXd _x_k = _A * _x +_B*u;
     //_P = _A*_P* _A.transpose() + _Q;
     VectorXreal F;
-    VectorXreal _xt;
+    //VectorXreal _xt;
     auto J = ad.JacobianMatrix(processModel,_x,F);
-    //_P  = J*_P;//* J.transpose()+_Q;
+    _P  = J*_P* J.transpose()+_Q;
 }
 
 void EKF::Update(Mat z)
 {
+    
     // Computer innovation
     Mat y = z - _H*_x;
     // Innovation covariance
