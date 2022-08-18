@@ -11,8 +11,18 @@ using Vec = Eigen::VectorXd;
 class EKF : public KalmanFilter
 {
     private:
+        Eigen::VectorXd VectorXRealToVectorxd(VectorXreal vr)
+        {
+            Eigen::VectorXd vec(vr.size(),1);
+            for(int i=0; i<vr.size(); ++i)
+            {
+                vec[i] = vr[i].val();
+            }
+            return vec;
+        }
     protected:
-        VectorXreal (*processModel)(VectorXreal);
+        VectorXreal (*f)(VectorXreal);
+        VectorXreal (*h)(VectorXreal);
         AutoDiffWrapper ad;
     public:
     /*
@@ -25,6 +35,7 @@ class EKF : public KalmanFilter
     */
         EKF(Mat A, Mat Q, Mat H, Mat R, Mat x, Mat P);
         EKF(Mat A, Mat Q, Mat B, Mat H, Mat R, Mat x, Mat P);
+        EKF(Mat A, Mat Q, Mat B, Mat R, Mat x, Mat P,VectorXreal(*_processModel)(VectorXreal),VectorXreal(*_observationModel)(VectorXreal));
         // The single-variable function for which derivatives are needed
     /*
      * Gaussian white noise selection
@@ -67,9 +78,13 @@ class EKF : public KalmanFilter
         {
             return GetState(z);
         }
-        void SetProcessModel(VectorXreal(*f)(VectorXreal))
+        void SetProcessModel(VectorXreal(*_pM)(VectorXreal))
         {
-            processModel = f;
+            f = _pM;
+        }
+        void SetObservationModel(VectorXreal(*_oM)(VectorXreal))
+        {
+            h = _oM;
         }
 
 };

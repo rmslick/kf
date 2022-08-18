@@ -20,6 +20,18 @@ EKF::EKF(Mat A, Mat Q, Mat B, Mat H, Mat R, Mat x, Mat P)
     _x = x;
     _P = P;
 }
+EKF::EKF(Mat A, Mat Q, Mat B, Mat R, Mat x, Mat P,VectorXreal(*_processModel)(VectorXreal),VectorXreal(*_observationModel)(VectorXreal))
+{
+    _A = A;
+    _Q = Q;
+    _B = B;
+    //_H = H;
+    _R = R;
+    _x = x;
+    _P = P;
+    SetProcessModel(_processModel);
+    SetObservationModel(_observationModel);
+}
 /*
 Mat EKF::WhiteNoise(Mat mean, Mat covariance)
 {
@@ -33,27 +45,29 @@ void EKF::Predict()
 }
 void EKF::Predict(Mat u)
 {
+    Eigen::MatrixXd _x_k =  VectorXRealToVectorxd( f(_x) ) +_B*u;
     //Need to add control vector
-    Eigen::MatrixXd _x_k = _A * _x +_B*u;
-    //_P = _A*_P* _A.transpose() + _Q;
     VectorXreal F;
-    //VectorXreal _xt;
-    auto J = ad.JacobianMatrix(processModel,_x,F);
-    _P  = J*_P* J.transpose()+_Q;
+    auto J_x = ad.JacobianMatrix(f,_x,F);
+    auto J_x_T = J_x.transpose();
+    // Update predications
+    _P  = J_x*_P*J_x_T  +_Q;
+    _x = _x_k;
 }
 
 void EKF::Update(Mat z)
 {
     
-    // Computer innovation
-    Mat y = z - _H*_x;
-    // Innovation covariance
-    Mat S = _H*_P*_H.transpose() + _R;
-    // Kalman gain
-    Mat K = _P*_H.transpose()*S.inverse();;
-    // State update
-    _x = _x + K*y;
-    // Covariance update
-    _P = _P - _P*K*_H;
-
+    VectorXreal F;
+    Eigen::MatrixXd J_h = ad.JacobianMatrix(h,_x,F);
+    Eigen::MatrixXd J_h_T = J_h.transpose();
+    // Compute Gain
+    Eigen::MatrixXd K = _P*J_h_T*(J_h*_P*J_h_T+_R).inverse();
+    // compute state
+    //Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, autodiff::detail::Real<1, double> >, const Eigen::Matrix<double, -1, -1>, const Eigen::Product<Eigen::Product<Eigen::Product<Eigen::Matrix<double, -1, -1>, Eigen::Transpose<Eigen::Matrix<double, -1, -1> >, 0>, Eigen::Inverse<Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, const Eigen::Product<Eigen::Product<Eigen::Matrix<double, -1, -1>, Eigen::Matrix<double, -1, -1>, 0>, Eigen::Transpose<Eigen::Matrix<double, -1, -1> >, 0>, const Eigen::Matrix<double, -1, -1> > >, 0>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_difference_op<double, autodiff::detail::Real<1, double> >, const Eigen::Matrix<double, -1, -1>, const Eigen::Matrix<autodiff::detail::Real<1, double>, -1, 1, 0, -1, 1> >, 0> > wert = _x+K*(z-h(t));
+    Eigen::VectorXd h_t = VectorXRealToVectorxd( h(_x) ) ;
+    Eigen::VectorXd innovation = z - h_t;
+    // Update state and covariance
+    _x =_x + K*innovation;
+    _P = (_P - K*J_h*_P);
 }
