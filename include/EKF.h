@@ -45,14 +45,16 @@ class EKF : public KalmanFilter
         void Predict();
         // Overloaded for control vector
         void Predict(Mat u);
-        Mat ComputeJacobian(VectorXreal(*f)(VectorXreal), Mat x, VectorXreal& F)
+        Mat ComputeJacobian(VectorXreal(*f)(VectorXreal), Mat x)
         {
-            return ad.JacobianMatrix (f,_x,F) ;
+            return ad.JacobianMatrix (f,_x) ;
         }
-        Mat F(Mat x){
+        Mat F(Mat x)
+        {
             return ad.VectorXRealToVectorxd( f(_x) );
         }
-        Mat H(Mat x){
+        Mat H(Mat x)
+        {
             return ad.VectorXRealToVectorxd( h(_x) ) ;
         }
     /*

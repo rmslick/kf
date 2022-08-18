@@ -34,7 +34,7 @@ class AutoDiffWrapper
         }
         //Jacobian matrix of a vector function
         template <typename function>
-        Eigen::MatrixXd JacobianMatrix(function f, VectorXreal x, VectorXreal F)
+        Eigen::MatrixXd JacobianMatrix(function f, VectorXreal x, VectorXreal F = VectorXreal())
         {
 
             return jacobian(f, wrt(x), at(x), F);
