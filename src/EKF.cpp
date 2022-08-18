@@ -45,10 +45,10 @@ void EKF::Predict()
 }
 void EKF::Predict(Mat u)
 {
-    Eigen::MatrixXd _x_k =  VectorXRealToVectorxd( f(_x) ) +_B*u;
+    Eigen::MatrixXd _x_k = F(_x)  +_B*u;
     //Need to add control vector
     VectorXreal F;
-    auto J_x = ad.JacobianMatrix(f,_x,F);
+    auto J_x = ComputeJacobian(f,_x,F);
     auto J_x_T = J_x.transpose();
     // Update predications
     _P  = J_x*_P*J_x_T  +_Q;
@@ -57,15 +57,14 @@ void EKF::Predict(Mat u)
 
 void EKF::Update(Mat z)
 {
-    
     VectorXreal F;
-    Eigen::MatrixXd J_h = ad.JacobianMatrix(h,_x,F);
+    Eigen::MatrixXd J_h = ComputeJacobian(h,_x,F);
     Eigen::MatrixXd J_h_T = J_h.transpose();
     // Compute Gain
     Eigen::MatrixXd K = _P*J_h_T*(J_h*_P*J_h_T+_R).inverse();
     // compute state
     //Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, autodiff::detail::Real<1, double> >, const Eigen::Matrix<double, -1, -1>, const Eigen::Product<Eigen::Product<Eigen::Product<Eigen::Matrix<double, -1, -1>, Eigen::Transpose<Eigen::Matrix<double, -1, -1> >, 0>, Eigen::Inverse<Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, const Eigen::Product<Eigen::Product<Eigen::Matrix<double, -1, -1>, Eigen::Matrix<double, -1, -1>, 0>, Eigen::Transpose<Eigen::Matrix<double, -1, -1> >, 0>, const Eigen::Matrix<double, -1, -1> > >, 0>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_difference_op<double, autodiff::detail::Real<1, double> >, const Eigen::Matrix<double, -1, -1>, const Eigen::Matrix<autodiff::detail::Real<1, double>, -1, 1, 0, -1, 1> >, 0> > wert = _x+K*(z-h(t));
-    Eigen::VectorXd h_t = VectorXRealToVectorxd( h(_x) ) ;
+    Eigen::VectorXd h_t = H(_x);
     Eigen::VectorXd innovation = z - h_t;
     // Update state and covariance
     _x =_x + K*innovation;

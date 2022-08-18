@@ -39,5 +39,13 @@ class AutoDiffWrapper
 
             return jacobian(f, wrt(x), at(x), F);
         }
-
+        Eigen::VectorXd VectorXRealToVectorxd(VectorXreal vr)
+        {
+            Eigen::VectorXd vec(vr.size(),1);
+            for(int i=0; i<vr.size(); ++i)
+            {
+                vec[i] = vr[i].val();
+            }
+            return vec;
+        }
 };
