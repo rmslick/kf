@@ -7,7 +7,6 @@
 
 using namespace autodiff;
 using Eigen::MatrixXd;
-
 class AutoDiffWrapper
 {
     public:
