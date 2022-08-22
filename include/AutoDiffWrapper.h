@@ -32,11 +32,58 @@ class AutoDiffWrapper
             return jacobian;
         }
         //Jacobian matrix of a vector function
-        template <typename function>
-        Eigen::MatrixXd JacobianMatrix(function f, VectorXreal x, VectorXreal F = VectorXreal())
+        template <typename jf>
+        Eigen::MatrixXd JacobianMatrix(jf f, VectorXreal x, VectorXreal F = VectorXreal())
         {
 
             return jacobian(f, wrt(x), at(x), F);
+        }
+        /*
+         * Input: Vector of vector functions all of the same variables (x,y,z, etc)
+         *          (Up to 4 variables)
+         *  Output: 
+         */
+        Eigen::MatrixXd Jacobian(std::vector<dual (*)(dual , dual)> f, dual _x, dual _y) 
+        {
+            dual x = _x;
+            dual y = _y;
+
+            std::vector<dual> F;
+            // 2nd arg - dimensions
+            // 1st arg - 
+            Eigen::MatrixXd J( f.size() ,2);
+            for(int i = 0; i < f.size() ; i++)
+            {
+                F.push_back( ( f.at(i) )(x,y) ) ;
+                auto f1 = f.at(i);
+                //std::cout << "Here: " << derivative(f1, wrt(x), at(x, y)) << std::endl;
+                J(i, 0) = derivative(f1, wrt(x), at(x, y)) ;
+                J(i, 1) = derivative(f1, wrt(y), at(x, y));
+                
+            }
+            return J;
+        }
+        Eigen::MatrixXd Jacobian(std::vector<dual (*)(dual , dual,dual)> f, dual _x, dual _y, dual _z) 
+        {
+            dual x = _x;
+            dual y = _y;
+            dual z = _z;
+
+            std::vector<dual> F;
+            // 2nd arg - dimensions
+            // 1st arg - 
+            Eigen::MatrixXd J( f.size() ,3);
+            for(int i = 0; i < f.size() ; i++)
+            {
+                // Compute the function
+                F.push_back( ( f.at(i) )(x,y,z) ) ;
+                auto f1 = f.at(i);
+                //std::cout << "Here: " << derivative(f1, wrt(x), at(x, y)) << std::endl;
+                J(i, 0) = derivative(f1, wrt(x), at(x, y, z)) ;
+                J(i, 1) = derivative(f1, wrt(y), at(x, y, z));
+                J(i, 2) = derivative(f1, wrt(z), at(x, y, z));
+            }
+            return J;
         }
         Eigen::VectorXd VectorXRealToVectorxd(VectorXreal vr)
         {
@@ -47,4 +94,6 @@ class AutoDiffWrapper
             }
             return vec;
         }
+
+
 };

@@ -65,33 +65,131 @@ TEST(AutoDiffTest, JacobianTest2D) {
     Eigen::MatrixXd J = ad.JacobianMatrix(f,x);
     std::cout << "Jacobian: " << J << std::endl;
 }
+dual f1_3dtest(dual x, dual y,dual z)
+{
+    return z* tan(x*x-y*y);
+}
+dual f2_3dtest(dual x, dual y,dual z)
+{
+    return x*y*log(z*0.5);
+}
 
-// The multi-variable function for which higher-order derivatives are needed (up to 4th order)
-// The multi-variable function for which derivatives are needed
-dual f1(dual x, dual y)
-{
-    return pow(x,4) + 3*pow(y,2)*x;
+TEST(AutoDiffTest, JacobianTestVector3D)
+{   // The multi-variable function for which higher-order derivatives are needed (up to 4th order)
+    // The multi-variable function for which derivatives are needed
+
+    dual x = 2.0;
+    dual y = -2.0;
+    dual z = 2.0;
+
+    Eigen::MatrixXd J(2,3);
+    J(0,0) = derivative(f1_3dtest, wrt(x), at(x, y,z)) ;
+    J(0,1) = derivative(f1_3dtest, wrt(y), at(x, y,z)) ;
+    J(0,2) = derivative(f1_3dtest, wrt(z), at(x, y,z)) ;
+    J(1,0) = derivative(f2_3dtest, wrt(x), at(x, y,z)) ;
+    J(1,1) = derivative(f2_3dtest, wrt(y), at(x, y,z)) ;
+    J(1,2) = derivative(f2_3dtest, wrt(z), at(x, y,z)) ;
+    
+    std::cout <<"From 3d!\n" << J << std::endl;
+    AutoDiffWrapper ad;
+    std::vector<dual (*)(dual , dual,dual) >f;
+    f.push_back(f1_3dtest);
+    f.push_back(f2_3dtest);
+    ASSERT_EQ ( ad.Jacobian(f,x,y,z), J );
 }
-dual f2(dual x, dual y)
-{
-    return 5*pow(y,2)-2*x*y+1;
-}
-int main(int argc, char **argv) {
-    testing::InitGoogleTest(&argc, argv);
+
+    dual f1(dual x, dual y)
+    {
+        return pow(x,4) + 3*pow(y,2)*x;
+    }
+    dual f2(dual x, dual y)
+    {
+        return 5*pow(y,2)-2*x*y+1;
+    }
+    dual f1c(dual x, dual y)
+    {
+        return pow(x,4) + 3*pow(y,2)*x;
+    }
+    dual f2c(dual x, dual y)
+    {
+        return 5*pow(y,2)-2*x*y+1;
+    }
+TEST(AutoDiffTest, JacobianTestVector2D)
+{   // The multi-variable function for which higher-order derivatives are needed (up to 4th order)
+    // The multi-variable function for which derivatives are needed
+
     dual x = 1.0;
     dual y = 2.0;
     dual z = 3.0;
 
     dual u = f1(x, y);
     Eigen::MatrixXd J(2,2);
-    J(0,0) = derivative(f1, wrt(x), at(x, y));
+    J(0,0) = derivative(f1, wrt(x), at(x, y)) ;
     J(0,1) = derivative(f1, wrt(y), at(x, y));
 
     J(1,0) = derivative(f2, wrt(x), at(x, y));
     J(1,1) = derivative(f2, wrt(y), at(x, y));
     
     std::cout << J << std::endl;
+    AutoDiffWrapper ad;
+    std::vector<dual (*)(dual , dual) >f;
+    f.push_back(f1);
+    f.push_back(f2);
+    ASSERT_EQ ( ad.Jacobian(f,x,y), J );
+}
+
+TEST (AutoDiffTest, JacobianNDTest2D)
+{
+    dual x = 2.0;
+    dual y = -2.0;
+    dual z = 2.0;
+
+    Eigen::MatrixXd J(2,3);
+    J(0,0) = derivative(f1_3dtest, wrt(x), at(x, y,z)) ;
+    J(0,1) = derivative(f1_3dtest, wrt(y), at(x, y,z)) ;
+    J(0,2) = derivative(f1_3dtest, wrt(z), at(x, y,z)) ;
+    J(1,0) = derivative(f2_3dtest, wrt(x), at(x, y,z)) ;
+    J(1,1) = derivative(f2_3dtest, wrt(y), at(x, y,z)) ;
+    J(1,2) = derivative(f2_3dtest, wrt(z), at(x, y,z)) ;
     
+    std::cout <<"From 3d!\n" << J << std::endl;
+    
+    //std::cout << J << std::endl;
+    AutoDiffWrapper ad;
+    std::vector<dual (*)(dual , dual,dual) >f;
+    //f.push_back(f1c);
+    //f.push_back(f2c);
+    f.push_back(f1_3dtest);
+    f.push_back(f2_3dtest);
+
+    ASSERT_EQ ( ad.Jacobian(f, x, y , z) ,J );
+}
+/*
+TEST (AutoDiffTest, JacobianNDTest3D)
+{
+    dual x = 2.0;
+    dual y = -2.0;
+    dual z = 2.0;
+
+    Eigen::MatrixXd J(2,3);
+    J(0,0) = derivative(f1_3dtest, wrt(x), at(x, y,z)) ;
+    J(0,1) = derivative(f1_3dtest, wrt(y), at(x, y,z)) ;
+    J(0,2) = derivative(f1_3dtest, wrt(z), at(x, y,z)) ;
+    J(1,0) = derivative(f2_3dtest, wrt(x), at(x, y,z)) ;
+    J(1,1) = derivative(f2_3dtest, wrt(y), at(x, y,z)) ;
+    J(1,2) = derivative(f2_3dtest, wrt(z), at(x, y,z)) ;
+    
+    std::cout <<"From 3d!\n" << J << std::endl;
+    AutoDiffWrapper ad;
+    std::vector<dual (*)(dual , dual,dual) >f;
+    f.push_back(f1_3dtest);
+    f.push_back(f2_3dtest);
+    ASSERT_EQ ( ad.Jacobian(f,std::vector<dual>{x,y,z} ),J );
+
+}*/
+int main(int argc, char **argv) {
+    testing::InitGoogleTest(&argc, argv);
+
     //std::cout << "du/dz = " << dudz << std::endl;  // print the evaluated derivative du/dz
     return RUN_ALL_TESTS();
 }

@@ -45,6 +45,7 @@ void EKF::Predict()
 }
 void EKF::Predict(Mat u)
 {
+    /*
     Eigen::MatrixXd _x_k = F(_x)  +_B*u;
     //Need to add control vector
     auto J_x = ComputeJacobian(f,_x);
@@ -52,10 +53,12 @@ void EKF::Predict(Mat u)
     // Update predications
     _P  = J_x*_P*J_x_T  +_Q;
     _x = _x_k;
+    */
 }
 
 void EKF::Update(Mat z)
 {
+    /*
     Eigen::MatrixXd J_h = ComputeJacobian(h,_x);
     Eigen::MatrixXd J_h_T = J_h.transpose();
     // Compute Gain
@@ -67,4 +70,5 @@ void EKF::Update(Mat z)
     // Update state and covariance
     _x =_x + K*innovation;
     _P = (_P - K*J_h*_P);
+    */
 }
