@@ -68,8 +68,18 @@ void EKF::Predict()
     Mat _x_k = _processModel->f(_x); //+_B*u;
     Mat J_x = _processModel->ComputeJacobian(_x);
     Mat J_x_T = J_x.transpose();
-    _P =  _P*J_x * J_x_T + _Q;
+    //std::cout  << "\n\n J_x*_P \n\n" << J_x *_P * J_x_T+_Q<< std::endl;
+
+    _P =  J_x *_P * J_x_T + _Q;
+    //std::cout << _P << std::endl;
+
     _x = _x_k;
+    //std::cout << "\nx \n" << _x_k << std::endl;
+    //std::cout << "\nJ_x \n" << J_x << std::endl;
+    //std::cout << "\nJ_x_T \n" << J_x_T << std::endl;
+    //std::cout  << "\n\n cov \n\n" << _P <<std::endl;
+    //std::cout << "\nLeaving EKF predict: \n" << std::endl;
+
     //std::cout << "Prediction EKF: " << _x << " pred cov: " << _P<< std::endl;
 }
 void EKF::Predict(Mat u)

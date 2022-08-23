@@ -132,20 +132,15 @@ int main()
 
         auto pred_meas_ekf = ekf(x_dot);
         auto pred_cov_ekf = ekf.GetCovariance();
-        std::cout << "\n\n";
+        //std::cout << "\n\n";
         std::cout <<"Pred meas: " << pred_meas(0,0) << " " << pred_meas(1,0)<<" " << pred_meas(2,0)<<" " << pred_meas(3,0) << std::endl;
         std::cout <<"Pred meas ekf: " << pred_meas_ekf(0,0) <<" " << pred_meas_ekf(1,0)<<" " << pred_meas_ekf(2,0)<<" " << pred_meas_ekf(3,0) << std::endl;
         std::cout << "Actual pred meas: "<< pred_states.row(i) << std::endl;
-        //std::cout << "\n\n";
-        //std::cout <<"Pred cov: \n" << pred_cov <<  std::endl;
-        //std::cout <<"Pred cov ekf: \n" << pred_cov_ekf << std::endl;
-        //std::cout << "Actual cov: "<< pred_states.row(i) << std::endl;
-        //std::cout << "\n\n";
         if(pred_meas != pred_meas_ekf)
         {
 
-            //std::cout << "Exiting gracefully\n";
-            //break;
+            std::cout << "Exiting gracefully\n";
+            break;
         }
     }
 

@@ -29,15 +29,17 @@ void LinearKF::Predict()
 {
     //Need to add control vector
     _x = _A * _x; //+_B*u;
-    _P = _A*_P* _A.transpose() + _Q;
-    //std::cout << "Prediction LKF: " << _x<< " pred cov: " << _P << std::endl;
+    //std::cout  << "\n\n _A*_P \n\n" << _A*_P * _A.transpose() +_Q << std::endl;
 
+    _P = _A*_P* _A.transpose() + _Q;
+    //std::cout << _P << std::endl;
 }
 void LinearKF::Predict(Mat u)
 {
     //Need to add control vector
     _x = _A * _x +_B*u;
     _P = _A*_P* _A.transpose() + _Q;
+    
 }
 
 void LinearKF::Update(Mat z)
