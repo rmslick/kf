@@ -181,9 +181,7 @@ class EKF : public KalmanFilter
         Mat GetState(Mat z)
         {
             // Predict state and covariance
-            //std::cout << "[INFO] Predicting!\n";
             Predict();
-            //std::cout << "[INFO] Predicted!\n";
             // Update state and covariance 
             Update(z);
             // Return the predicted state

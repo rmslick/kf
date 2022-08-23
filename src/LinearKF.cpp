@@ -52,8 +52,10 @@ void LinearKF::Update(Mat z)
     Mat K = _P*_H.transpose() *S.inverse();
     // State update
     _x = _x + K*y;
-    // Covariance update
-    _P = _P - _P*K*_H;
-
+    // Covariance update (????)
+    //_P = _P - _P*K*_H;
+    //self._P = self._P - self.K @ self.S @ self.K.transpose()
+    
+    _P = _P - K*S*K.transpose();
     
 }

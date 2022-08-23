@@ -68,19 +68,10 @@ void EKF::Predict()
     Mat _x_k = _processModel->f(_x); //+_B*u;
     Mat J_x = _processModel->ComputeJacobian(_x);
     Mat J_x_T = J_x.transpose();
-    //std::cout  << "\n\n J_x*_P \n\n" << J_x *_P * J_x_T+_Q<< std::endl;
-
     _P =  J_x *_P * J_x_T + _Q;
-    //std::cout << _P << std::endl;
-
     _x = _x_k;
-    //std::cout << "\nx \n" << _x_k << std::endl;
-    //std::cout << "\nJ_x \n" << J_x << std::endl;
-    //std::cout << "\nJ_x_T \n" << J_x_T << std::endl;
-    //std::cout  << "\n\n cov \n\n" << _P <<std::endl;
-    //std::cout << "\nLeaving EKF predict: \n" << std::endl;
 
-    //std::cout << "Prediction EKF: " << _x << " pred cov: " << _P<< std::endl;
+
 }
 void EKF::Predict(Mat u)
 {
@@ -99,13 +90,15 @@ void EKF::Update(Mat z)
     Eigen::MatrixXd J_h = _observationModel->ComputeJacobian(_x);
     Eigen::MatrixXd J_h_T = J_h.transpose();
     // Compute Gain
-    Eigen::MatrixXd K = _P*J_h_T*( J_h*_P*J_h_T+_R ).inverse();
+    Eigen::MatrixXd S = J_h*_P*J_h_T+_R;
+    Eigen::MatrixXd K = _P*J_h_T*( S ).inverse();
     // compute state
+     
     //Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, autodiff::detail::Real<1, double> >, const Eigen::Matrix<double, -1, -1>, const Eigen::Product<Eigen::Product<Eigen::Product<Eigen::Matrix<double, -1, -1>, Eigen::Transpose<Eigen::Matrix<double, -1, -1> >, 0>, Eigen::Inverse<Eigen::CwiseBinaryOp<Eigen::internal::scalar_sum_op<double, double>, const Eigen::Product<Eigen::Product<Eigen::Matrix<double, -1, -1>, Eigen::Matrix<double, -1, -1>, 0>, Eigen::Transpose<Eigen::Matrix<double, -1, -1> >, 0>, const Eigen::Matrix<double, -1, -1> > >, 0>, Eigen::CwiseBinaryOp<Eigen::internal::scalar_difference_op<double, autodiff::detail::Real<1, double> >, const Eigen::Matrix<double, -1, -1>, const Eigen::Matrix<autodiff::detail::Real<1, double>, -1, 1, 0, -1, 1> >, 0> > wert = _x+K*(z-h(t));
     Eigen::VectorXd innovation = z - h_k;
     // Update state and covariance
     _x =_x + K*innovation;
-    _P = (_P - _P* K*J_h);
-        
+    //_P = (_P - _P* K*J_h);
+    _P = _P - K* S *K.transpose();
 
 }
