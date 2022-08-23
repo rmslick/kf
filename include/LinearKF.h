@@ -54,6 +54,7 @@ class LinearKF : public KalmanFilter
         {
             // Predict state and covariance
             Predict();
+            
             // Update state and covariance 
             Update(z);
             // Return the predicted state

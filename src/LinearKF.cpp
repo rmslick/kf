@@ -30,6 +30,8 @@ void LinearKF::Predict()
     //Need to add control vector
     _x = _A * _x; //+_B*u;
     _P = _A*_P* _A.transpose() + _Q;
+    //std::cout << "Prediction LKF: " << _x<< " pred cov: " << _P << std::endl;
+
 }
 void LinearKF::Predict(Mat u)
 {
@@ -51,4 +53,5 @@ void LinearKF::Update(Mat z)
     // Covariance update
     _P = _P - _P*K*_H;
 
+    
 }

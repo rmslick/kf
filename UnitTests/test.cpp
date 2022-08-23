@@ -92,7 +92,7 @@ TEST(AutoDiffTest, JacobianTestVector3D)
     
     std::cout <<"From 3d!\n" << J << std::endl;
     AutoDiffWrapper ad;
-    std::vector<dual (*)(dual , dual,dual) >f;
+    std::vector<dual (*)(dual , dual,dual) > f;
     f.push_back(f1_3dtest);
     f.push_back(f2_3dtest);
     ASSERT_EQ ( ad.Jacobian(f,x,y,z), J );
@@ -187,6 +187,11 @@ TEST (AutoDiffTest, JacobianNDTest3D)
     ASSERT_EQ ( ad.Jacobian(f,std::vector<dual>{x,y,z} ),J );
 
 }*/
+// The vector function for which the Jacobian is needed
+VectorXreal functorama (const VectorXreal& x)
+{
+    return x * x.sum();
+}
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
 

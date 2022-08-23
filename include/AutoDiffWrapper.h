@@ -85,6 +85,30 @@ class AutoDiffWrapper
             }
             return J;
         }
+        Eigen::MatrixXd Jacobian(std::vector<dual (*)(dual , dual,dual,dual)> f, dual _x, dual _y, dual _z, dual _q) 
+        {
+            dual x = _x;
+            dual y = _y;
+            dual z = _z;
+            dual q = _q;
+
+            std::vector<dual> F;
+            // 2nd arg - dimensions
+            // 1st arg - 
+            Eigen::MatrixXd J( f.size() ,4);
+            for(int i = 0; i < f.size() ; i++)
+            {
+                // Compute the function
+                F.push_back( ( f.at(i) )(x,y,z,q) ) ;
+                auto f1 = f.at(i);
+                //std::cout << "Here: " << derivative(f1, wrt(x), at(x, y)) << std::endl;
+                J(i, 0) = derivative(f1, wrt(x), at(x, y, z,q)) ;
+                J(i, 1) = derivative(f1, wrt(y), at(x, y, z,q));
+                J(i, 2) = derivative(f1, wrt(z), at(x, y, z,q));
+                J(i, 3) = derivative(f1, wrt(q), at(x, y, z,q));
+            }
+            return J;
+        }
         Eigen::VectorXd VectorXRealToVectorxd(VectorXreal vr)
         {
             Eigen::VectorXd vec(vr.size(),1);

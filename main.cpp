@@ -5,7 +5,7 @@
 #include "LinearKF.h"
 #include "AutoDiffWrapper.h"
 #include <fstream>
-
+#include "EKF.h"
 using ArmaMat = arma::mat;
 ArmaMat jsoncppArrayToMat1D(Json::Value Amat)
 {
@@ -115,20 +115,38 @@ int main()
     auto pred_covariances = example_cast_eigen( jsoncppArrayToMat3D(predicated_covariances) );
 
     LinearKF kf(A,Q,H,R,x_init, P_init);
-
+    processModelCV * pmcv = new processModelCV();
+    observationModelCV * omcv = new observationModelCV();
+    EKF ekf(A,Q,H,R,x_init,P_init,pmcv,omcv );
+    std::cout << A << std::endl;
     for(int i = 0; i < sim_measurements.rows() ; i++)
     {
         ArmaMat meas(2,1);
         meas(0,0) = (sim_measurements.row(i))(0,0);
         meas(1,0) = (sim_measurements.row(i))(0,1);
+
         auto x_dot = example_cast_eigen(meas);
+        
         auto pred_meas = kf(x_dot);
         auto pred_cov = kf.GetCovariance();
 
-        std::cout <<"Pred meas: " << pred_meas << std::endl;
+        auto pred_meas_ekf = ekf(x_dot);
+        auto pred_cov_ekf = ekf.GetCovariance();
+        std::cout << "\n\n";
+        std::cout <<"Pred meas: " << pred_meas(0,0) << " " << pred_meas(1,0)<<" " << pred_meas(2,0)<<" " << pred_meas(3,0) << std::endl;
+        std::cout <<"Pred meas ekf: " << pred_meas_ekf(0,0) <<" " << pred_meas_ekf(1,0)<<" " << pred_meas_ekf(2,0)<<" " << pred_meas_ekf(3,0) << std::endl;
         std::cout << "Actual pred meas: "<< pred_states.row(i) << std::endl;
+        //std::cout << "\n\n";
+        //std::cout <<"Pred cov: \n" << pred_cov <<  std::endl;
+        //std::cout <<"Pred cov ekf: \n" << pred_cov_ekf << std::endl;
+        //std::cout << "Actual cov: "<< pred_states.row(i) << std::endl;
+        //std::cout << "\n\n";
+        if(pred_meas != pred_meas_ekf)
+        {
 
-
+            //std::cout << "Exiting gracefully\n";
+            //break;
+        }
     }
 
 
