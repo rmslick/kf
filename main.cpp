@@ -135,15 +135,10 @@ int main()
         //std::cout << "\n\n";
         std::cout <<"Pred meas: " << pred_meas(0,0) << " " << pred_meas(1,0)<<" " << pred_meas(2,0)<<" " << pred_meas(3,0) << std::endl;
         std::cout <<"Pred meas ekf: " << pred_meas_ekf(0,0) <<" " << pred_meas_ekf(1,0)<<" " << pred_meas_ekf(2,0)<<" " << pred_meas_ekf(3,0) << std::endl;
-        std::cout << "Actual pred meas: "<< pred_states.row(i) << std::endl;
+        std::cout << "Sim pred meas: "<< pred_states.row(i) << std::endl;
+        std::cout << "Actual state: " <<sim_states.row(i) << std::endl;
         std::cout << std::endl;
         std::cout << std::endl;
-        if(pred_meas != pred_meas_ekf)
-        {
-
-            std::cout << "Exiting gracefully\n";
-            break;
-        }
     }
 
 

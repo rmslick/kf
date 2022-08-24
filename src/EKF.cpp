@@ -66,7 +66,7 @@ void EKF::Predict()
 {
     //Need to add control vector
     Mat _x_k = _processModel->f(_x); //+_B*u;
-    Mat J_x = _processModel->ComputeJacobian(_x);
+    Mat J_x = _processModel->Linearize(_x);
     Mat J_x_T = J_x.transpose();
     _P =  J_x *_P * J_x_T + _Q;
     _x = _x_k;
@@ -77,9 +77,14 @@ void EKF::Predict(Mat u)
 {
     /*
     auto _x_k = _processModel->f(_x) +_B*u;
-    _P = _processModel->ComputeJacobian(_x) *_P* _processModel->ComputeJacobian(_x).transpose() + _Q;
+    _P = _processModel->Linearize(_x) *_P* _processModel->Linearize(_x).transpose() + _Q;
     _x = _x_k;
     */
+    Mat _x_k = _processModel->f(_x); //;
+    Mat J_x = _processModel->Linearize(_x);
+    Mat J_x_T = J_x.transpose();
+    _P =  J_x *_P * J_x_T + _Q + _B*u;
+    _x = _x_k;
 }
 
 void EKF::Update(Mat z)
@@ -87,7 +92,7 @@ void EKF::Update(Mat z)
 
     
     Eigen::MatrixXd h_k = _observationModel->f(_x);
-    Eigen::MatrixXd J_h = _observationModel->ComputeJacobian(_x);
+    Eigen::MatrixXd J_h = _observationModel->Linearize(_x);
     Eigen::MatrixXd J_h_T = J_h.transpose();
     // Compute Gain
     Eigen::MatrixXd S = J_h*_P*J_h_T+_R;
@@ -98,7 +103,10 @@ void EKF::Update(Mat z)
     Eigen::VectorXd innovation = z - h_k;
     // Update state and covariance
     _x =_x + K*innovation;
-    //_P = (_P - _P* K*J_h);
-    _P = _P - K* S *K.transpose();
+    Eigen::MatrixXd I = Eigen::MatrixXd::Identity( _P.rows() ,_P.cols() );
+    _P = ( I - K*J_h ) * _P;
+    //In linear case, can uncomment to validate against linear covariance eq
+
+    //_P = _P - K* S *K.transpose();
 
 }

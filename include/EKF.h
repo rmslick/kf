@@ -28,7 +28,7 @@ class ProcessModel
         {
             return F;
         }
-        virtual Mat ComputeJacobian(Eigen::VectorXd x_dot) = 0;
+        virtual Mat Linearize(Eigen::VectorXd x_dot) = 0;
 };
 dual H1(dual x, dual y,dual x_v, dual y_v);
 
@@ -61,7 +61,7 @@ class processModelCV : public ProcessModel< dual (*)(dual , dual, dual , dual) >
         {
             return F;
         }*/
-        Mat ComputeJacobian(Eigen::VectorXd x_dot)
+        Mat Linearize(Eigen::VectorXd x_dot)
         {
             return ad.Jacobian ( GetVectorFunction() ,x_dot(0), x_dot(1), x_dot(2),x_dot(3)) ;
         }
@@ -92,7 +92,7 @@ class observationModelCV : public ProcessModel< dual (*)(dual , dual, dual , dua
         {
             return F;
         }*/
-        Mat ComputeJacobian(Eigen::VectorXd x_dot)
+        Mat Linearize(Eigen::VectorXd x_dot)
         {
             return ad.Jacobian ( GetVectorFunction() ,x_dot(0), x_dot(1), x_dot(2),x_dot(3)) ;
         }
@@ -155,7 +155,7 @@ class EKF : public KalmanFilter
         void Predict(Mat u);
         // vector valued function
         template<typename function>
-        Mat ComputeJacobian(function f, dual x, dual y)
+        Mat Linearize(function f, dual x, dual y)
         {
             return ad.Jacobian (f,x,y) ;
         }
