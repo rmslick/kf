@@ -164,6 +164,14 @@ TEST (AutoDiffTest, JacobianNDTest2D)
 
     ASSERT_EQ ( ad.Jacobian(f, x, y , z) ,J );
 }
+dual gyrotest1(dual w, dual x, dual y, dual z, dual wx,dual wy,dual wz)
+{
+    return x*y*log(z*0.5) ;
+}
+
+
+
+
 /*
 TEST (AutoDiffTest, JacobianNDTest3D)
 {
@@ -192,6 +200,8 @@ VectorXreal functorama (const VectorXreal& x)
 {
     return x * x.sum();
 }
+
+
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
 

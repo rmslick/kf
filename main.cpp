@@ -6,6 +6,7 @@
 #include "AutoDiffWrapper.h"
 #include <fstream>
 #include "EKF.h"
+#include "ExtendedKalmanFilter.h"
 using ArmaMat = arma::mat;
 ArmaMat jsoncppArrayToMat1D(Json::Value Amat)
 {
@@ -83,6 +84,7 @@ Eigen::MatrixXd example_cast_eigen(arma::mat arma_A) {
 }
 int main()
 {
+    /*
     Json::Value simulation;
     std::ifstream simulation_file("/home/rmslick/KalmanFilter/KalmanFilterC/KalmanPy/simulation_data.json", std::ifstream::binary);
     simulation_file >> simulation;
@@ -140,7 +142,7 @@ int main()
         std::cout << std::endl;
         std::cout << std::endl;
     }
-
-
+    */
+    MultiplicativeExtendedKalmanFilter<double> mekf();
     return 0;
 }
